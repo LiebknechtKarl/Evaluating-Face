@@ -1,0 +1,100 @@
+import cv2
+import os,sys
+# def process_video(video_path):
+#     # 打开视频文件
+#     cap = cv2.VideoCapture(video_path)
+
+#     # 检查视频是否成功打开
+#     if not cap.isOpened():
+#         print(f"无法打开视频文件: {video_path}")
+#         return
+
+#     # 获取视频的帧率和总帧数
+#     fps = cap.get(cv2.CAP_PROP_FPS)
+#     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+#     print(f"视频帧率: {fps} fps")
+#     print(f"总帧数: {total_frames}")
+
+#     # 遍历每一帧
+#     frame_count = 0
+#     while cap.isOpened():
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
+
+#         # 处理每一帧的逻辑
+#         frame_count += 1
+#         print(f"处理第 {frame_count} 帧")
+
+#         # 显示当前帧
+#         cv2.imshow('Video Frame', frame)
+
+#         # 按 'q' 键退出
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
+
+#     # 释放资源
+#     cap.release()
+#     cv2.destroyAllWindows()
+
+# if __name__ == "__main__":
+#     # video_path = "example.mp4"  # 替换为你的视频文件路径
+#     video_path = os.path.dirname(__file__) + '/li_rena.mp4'   # 替换为你的视频文件路径
+
+
+#     process_video(video_path)
+
+# #####################################
+
+import cv2
+
+def get_frame_by_number(video_path, frame_number):
+    # 打开视频文件
+    cap = cv2.VideoCapture(video_path)
+
+    # 检查视频是否成功打开
+    if not cap.isOpened():
+        print(f"无法打开视频文件: {video_path}")
+        return None
+
+    # 获取总帧数
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if frame_number < 0 or frame_number >= total_frames:
+        print(f"帧号 {frame_number} 超出范围 (0 到 {total_frames - 1})")
+        cap.release()
+        return None
+
+    # 设置要读取的帧号
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+
+    # 读取指定帧
+    ret, frame = cap.read()
+
+    # 释放资源
+    cap.release()
+
+    if ret:
+        return frame
+    else:
+        print(f"无法读取帧 {frame_number}")
+        return None
+
+# 示例用法
+if __name__ == "__main__":
+    # video_path = "example.mp4"  # 替换为你的视频文件路径
+    # video_path = os.path.dirname(__file__) + '/li_rena.mp4'   # 替换为你的视频文件路径
+    video_path = 'data/pic_violin/li_rena.mp4'   # 替换为你的视频文件路径
+
+
+    # frame_number = 100  # 替换为你想要的帧号
+    frame_number = 0  # 替换为你想要的帧号
+
+
+    frame = get_frame_by_number(video_path, frame_number)
+    if frame is not None:
+        # 显示获取的帧
+        cv2.imshow('Frame', frame)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    else:
+        print("获取帧失败")
