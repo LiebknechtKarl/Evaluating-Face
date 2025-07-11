@@ -1,16 +1,3 @@
-'''
-import cv2
-import mediapipe as mp
-from mediapipe.framework.formats import landmark_pb2
-from mediapipe.tasks import python as mp_python
-import time
-import numpy as np
-from scipy.spatial.transform import Rotation
-import matplotlib.pyplot as plt
-import sys
-'''
-
-# STEP 1: Import the necessary modules.
 import mediapipe as mp
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
@@ -24,7 +11,6 @@ import os
 
 script_dir = os.path.dirname(__file__)
 MP_TASK_FILE = os.path.join(script_dir, 'face_landmarker_v2_with_blendshapes.task')
-
 
 class FaceMeshDetector:
     def __init__(self):
@@ -91,18 +77,11 @@ class FaceMeshDetector:
         cv2.imshow("Camera", annotated_image)
         cv2.waitKey(0)
 
-
-
 if __name__ == "__main__":
-    
     face_mesh_detector = FaceMeshDetector()
-    # img_path = os.path.join(script_dir, '1.jpg')
     img_path = 'data/model_pic/1.jpg'
-
     img = cv2.imread(img_path)
-
     landmark, blendshape, r_mat = face_mesh_detector.get_results(img) # 测试接口文件
-
     print(blendshape)
     
     # 可视化代码

@@ -1,25 +1,15 @@
-
-
-
 import cv2
 import os
 import mediapipe as mp
-
 import numpy as np
-# from Gs.face_detect_model import face2point,video2point,video_Gs,video_Gs_doubleface
-
 import sys,os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
 from Gs.face_detect_model import video2point, face2point
-
 
 def video_Gt_doubleface(video_path1,frame_l,b = 1) :
 
     data = np.array(video2point(video_path1,frame_l))
     np.save("data_gt.npy",data)
-
-
 
     if data.shape[1] < 2 :
         print('没有检测到两张脸')
@@ -27,42 +17,21 @@ def video_Gt_doubleface(video_path1,frame_l,b = 1) :
     data1 = data[:,:1,:,:]
     data2 = data[:,1:2,:,:]
 
-
     # data1.shape   (5, 1, 478, 2)
     # 5帧  1人     478点    xy
-
     point_loss_list = []
 
     for point_i in range(data1.shape[2]) :
-    # for point_i in range(10) :
 
-        # xh0 = 
         # 第0帧人  point_i点 
-        xh0 = data1[0,0,point_i,0]        # 0.53679472, 0.52348125, 0.53761703])
-        yh0 = data1[0,0,point_i,1]        # 0.53679472, 0.52348125, 0.53761703])
+        xh0 = data1[0,0,point_i,0]                          # 0.53679472, 0.52348125, 0.53761703])
+        yh0 = data1[0,0,point_i,1]                          # 0.53679472, 0.52348125, 0.53761703])
 
-        xr0 = data2[0,0,point_i,0]        # 0.53679472, 0.52348125, 0.53761703])
-        yr0 = data2[0,0,point_i,1]        # 0.53679472, 0.52348125, 0.53761703])
+        xr0 = data2[0,0,point_i,0]                          # 0.53679472, 0.52348125, 0.53761703])
+        yr0 = data2[0,0,point_i,1]                          # 0.53679472, 0.52348125, 0.53761703])
 
         # xh0,yh0,   xr0,yr0
         # xh,yh,    xr,yr
-        # data1[1:,0,point_i,:] , data2[1:,0,point_i,:]
-        # data1[1:,0,point_i,:]
-
-
-
-        # xh = data1[1:,0,point_i,0]
-        # yh = data1[1:,0,point_i,1]
-
-        # xr = data2[1:,0,point_i,0]
-        # yr = data2[1:,0,point_i,1]
-
-
-        # xh_ = data1[1:,0,point_i,0] - xh0
-        # yh_ = data1[1:,0,point_i,1] - yh0
-
-        # xr_ = data2[1:,0,point_i,0] - xr0
-        # yr_ = data2[1:,0,point_i,1] - yr0
 
         b0 = 1
         print(b0)
@@ -75,41 +44,19 @@ def video_Gt_doubleface(video_path1,frame_l,b = 1) :
         # xr_ = xr_ * 1.0236966824644549
         # yr_ = yr_ * 1.077922077922078
 
-
-
-
-
-
         # xh_,yh_,            xr_,yr_
-
-        dh_list = np.sqrt(np.square(xh_) + np.square(yh_))          # dh_list.shape     (9,)
+        dh_list = np.sqrt(np.square(xh_) + np.square(yh_))   # dh_list.shape     (9,)
         dr_list = np.sqrt(np.square(xr_) + np.square(yr_))
 
         diff_dh_list = np.diff(dh_list)
         diff_dr_list = np.diff(dr_list)
 
-
-        # F_list =np.exp( -np.square(dh_list - dr_list)/b)
         F_list =np.exp( -np.square(diff_dh_list - diff_dr_list)/b)
-
-
-        # point_loss_list.append(sum(F_list)/len(F_list))
         point_loss_list.append(np.average(F_list))
 
-
-    # print(point_loss_list)
-
-    # print('最终Gs', sum(point_loss_list)/len(point_loss_list))
-
-    # print(point_loss_list,'逐点loss')
-
-    # return sum(point_loss_list)/len(point_loss_list)
     return np.average(point_loss_list)
 
-
-
-
-def main() :
+if __name__ == "__main__":
     # 加载图片
     image_path = 'data/model_pic/1.jpg'
     image = cv2.imread(image_path)
@@ -118,12 +65,8 @@ def main() :
 
     # video_path = os.path.dirname(os.path.dirname(__file__)) + '/1.mp4'
     video_path ='data/model_pic/2.webm'
-
     video_data = video2point(video_path)
 
-    # print(video_data)
     video_data_array = np.array(video_data)
     print(video_data_array)
-if __name__ == "__main__":
-    main()
 

@@ -28,9 +28,7 @@ def detect_and_visualize_face_landmarks(frame):
     return frame
 
 if __name__ == "__main__":
-    # video_path = os.path.dirname(__file__) + '/li_rena.mp4'  # 替换为你的视频文件路径
-    video_path = 'data/pic_violin/cropped_li_rena.mp4'  # 替换为你的视频文件路径
-
+    video_path = 'data/pic_violin/cropped_li_rena.mp4'              # 替换为你的视频文件路径
 
     # 打开视频文件
     cap = cv2.VideoCapture(video_path)

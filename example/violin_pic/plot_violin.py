@@ -4,15 +4,11 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-
 Face_Length = 190
 Face_Width = 120
 plt.style.use('_mpl-gallery')
 
-
-
 def face_measure(face_landmark_single):
-
 
     # 获取每列
     col1 = face_landmark_single[:, 0]
@@ -26,15 +22,12 @@ def face_measure(face_landmark_single):
 
     # 合并回来
     face_landmark_single_scaled = np.stack([col1_scaled, col2_scaled], axis=1)
-
     return face_landmark_single_scaled
 
 
 def get_frame_by_number(video_path, frame_number):
     # 打开视频文件
     cap = cv2.VideoCapture(video_path)
-
-    # 检查视频是否成功打开
     if not cap.isOpened():
         print(f"无法打开视频文件: {video_path}")
         return None
@@ -100,79 +93,38 @@ def double_face_distance(landmarks_list):
 
     face_alpha =  np.array(landmarks_list[0], dtype=np.float32)
     face_beta =  np.array(landmarks_list[1], dtype=np.float32)
-    # np.array(landmarks_list, dtype=np.float32)
-
-
-    # print(face_alpha)
     face_alpha_ = face_measure(face_alpha)
     face_beta_ = face_measure(face_beta)
-
-
     print(face_alpha)
 
     distances = np.linalg.norm(face_alpha_ - face_beta_, axis=1)  # shape: (68,)
-
     return distances
-
-
 
 def violin_plot(distances_) :
 
-
     all_data = distances_
-
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 1))
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(2, 1))
 
-
-
-    # Fixing random state for reproducibility
-    # np.random.seed(19680801)
-
-    # generate some random test data
-    # all_data = [np.random.normal(0, std, 100) for std in range(6, 10)]
-
-    # all_data = [all_data[0]]
-    # plot violin plot
-
-
-    # axs[0].violinplot(all_data,
-    #                 showmeans=False,
-    #                 showmedians=True)
     axs[0].violinplot(all_data, widths=2,
                     showmeans=False,
                     showmedians=False,
                     showextrema = False
                     )    
-
-    # vp = ax.violinplot(D, [2, 4, 6], widths=2,
-    #                    showmeans=False, showmedians=False, showextrema=False)
-
     axs[0].set_title('Violin plot')
 
-    # plot box plot
     axs[1].boxplot(all_data)
     axs[1].set_title('Box plot')
 
-    # adding horizontal grid lines
     for ax in axs:
         ax.yaxis.grid(True)
-        # ax.set_xticks([y + 1 for y in range(len(all_data))],
-        #               labels=['x1', 'x2', 'x3', 'x4'])
         ax.set_xlabel('Four separate samples')
         ax.set_ylabel('Observed values')
-
     plt.show()
 
 
 def multi_violin_plot(distances_) :
 
-
     all_data = distances_
-
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 1))
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
 
     axs[0].violinplot(all_data,
@@ -180,41 +132,22 @@ def multi_violin_plot(distances_) :
                     showmedians=True)
     axs[0].set_title('Violin plot')
 
-    # plot box plot
     axs[1].boxplot(all_data)
     axs[1].set_title('Box plot')
 
-    # adding horizontal grid lines
     for ax in axs:
         ax.yaxis.grid(True)
-        # ax.set_xticks([y + 1 for y in range(len(all_data))],
-        #               labels=['x1', 'x2', 'x3', 'x4'])
         ax.set_xlabel('Four separate samples')
         ax.set_ylabel('Observed values')
-
     plt.show()
 
 
 if __name__ == "__main__":
-    # video_path = os.path.dirname(__file__) + '/li_rena.mp4'  # 替换为你的视频文件路径
     video_path ='data/pic_violin/li_rena.mp4'  # 替换为你的视频文件路径
-
     frame_number = 0  # 替换为你想要的帧号
-
     frame = get_frame_by_number(video_path, frame_number)
     if frame is not None:
         frame_with_landmarks, landmarks_list = detect_face_landmarks(frame)
-
-
-        # # 显示获取的帧
-        # cv2.imshow('Frame', frame_with_landmarks)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-
-        # # 打印关键点列表
-        # print("人脸关键点列表：", landmarks_list)
-
-        #  landmarks_list[0]      [(290, 330), (290, 357), (292, 384), (297, 412), (307, 436), (322, 458), 
 
         distances_ = double_face_distance(landmarks_list)
 
@@ -227,14 +160,6 @@ if __name__ == "__main__":
         jaw_distances = distances_[48:61]
 
         distances_whole_face = [eye_distances, brow_distances, nose_distances, cheek_distances, mouth_distances  , jaw_distances ]
-
-
-
-        # print(distances_)
-        # print(distances_)
-
-
-        # violin_plot(distances_)
 
         # all
         print(distances_whole_face)
